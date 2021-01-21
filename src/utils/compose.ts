@@ -1,5 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Func = (...args: any[]) => any;
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function compose<T extends Func>(...funcs: Func[]) {
   if (!funcs || funcs.length === 0) {
     return undefined;
