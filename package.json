@@ -21,6 +21,8 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-typescript": "^7.12.7",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.7",
@@ -41,5 +43,12 @@
   ],
   "publishConfig": {
     "registry": "https://nexus.bizseer.com/repository/npm-private"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.4.0",
+    "antd": "^4.10.3",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "styled-components": "^5.2.1"
   }
 }
