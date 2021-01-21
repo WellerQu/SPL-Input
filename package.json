@@ -7,6 +7,7 @@
   "typings": "dist",
   "scripts": {
     "prepare": "install-peers",
+    "start": "tsc-watch --onSuccess 'touch example/index.tsx'",
     "build": "rm -rf dist && tsc --build tsconfig.json",
     "lint": "eslint src/**/* --fix",
     "prepublishOnly": "npm run lint && npm run build",
@@ -34,6 +35,7 @@
     "husky": "^4.3.8",
     "install-peers-cli": "^2.2.0",
     "lint-staged": "^10.5.3",
+    "tsc-watch": "^4.2.9",
     "tslib": "^2.1.0",
     "typescript": "^4.1.3"
   },
