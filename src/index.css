@@ -15,4 +15,6 @@
   width: 120px;
   display: inline-block;
   vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

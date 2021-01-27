@@ -11,19 +11,18 @@ import '../src/index.css'
 const fields: DistinctField[] = [{
   name: 'application',
   valueType: FieldValueType.str,
-  status: false
 }, {
   name: 'service',
   valueType: FieldValueType.str,
-  status: false
 }, {
   name: 'host',
   valueType: FieldValueType.str,
-  status: false
 }, {
   name: 'level',
   valueType: FieldValueType.num,
-  status: false
+}, {
+  name: 'code1234567890123456789012345678901234567890123456',
+  valueType: FieldValueType.str,
 }]
 
 ReactDOM.render(
