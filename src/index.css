@@ -8,8 +8,11 @@
 
 .desc-style {
   color: rgba(0, 0, 0, 0.45); /* ${(props) => props.theme['text-color-secondary']}; */ 
+  vertical-align: middle;
 }
 
 .option-style {
-  color: rgba(0, 0, 0, 0.45); /* ${(props) => props.theme['text-color-secondary']}; */ 
+  width: 120px;
+  display: inline-block;
+  vertical-align: middle;
 }
