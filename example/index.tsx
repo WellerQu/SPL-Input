@@ -6,6 +6,8 @@ import 'antd/dist/antd.css'
 import { FieldValueType, QueryInput } from '../.'
 import { DistinctField } from '../dist/hooks/useSyntaxSuggestions'
 
+import '../src/index.css'
+
 const fields: DistinctField[] = [{
   name: 'application',
   valueType: FieldValueType.str,

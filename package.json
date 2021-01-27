@@ -8,7 +8,7 @@
   "scripts": {
     "prepare": "install-peers",
     "start": "tsc-watch --onSuccess 'touch example/index.tsx'",
-    "build": "rm -rf dist && tsc --build tsconfig.json",
+    "build": "rm -rf dist && tsc --build tsconfig.json && cp src/index.css dist/spl-input.css",
     "lint": "eslint src/**/* --fix",
     "prepublishOnly": "npm run lint && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -46,5 +46,6 @@
   ],
   "publishConfig": {
     "registry": "https://nexus.bizseer.com/repository/npm-private"
-  }
+  },
+  "dependencies": {}
 }

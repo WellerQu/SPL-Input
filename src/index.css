@@ -1,0 +1,15 @@
+.provider-menu-style {
+  border-radius: 2px; /* ${(props) => props.theme['border-radius-base']}; */
+  border-color: #d9d9d9; /* ${(props) => props.theme['border-color-base']}; */
+  border-width: 1px;
+  border-style: solid;
+  box-shadow:  0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); /* ${( props) => props.theme['box-shadow-base']}; */ 
+}
+
+.desc-style {
+  color: rgba(0, 0, 0, 0.45); /* ${(props) => props.theme['text-color-secondary']}; */ 
+}
+
+.option-style {
+  color: rgba(0, 0, 0, 0.45); /* ${(props) => props.theme['text-color-secondary']}; */ 
+}

@@ -16,6 +16,9 @@ import * as ReactDOM from 'react-dom'
 import { FieldValueType, QueryInput } from 'spl-input'
 import { DistinctField } from 'spl-input/hooks/useSyntaxSuggestions'
 
+// 导入 css 文件
+import 'spl-input/spl-input.css'
+
 const fields: DistinctField[] = [{
   name: 'application',
   valueType: FieldValueType.str,

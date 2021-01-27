@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import styled from 'styled-components';
 
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 
@@ -16,31 +15,6 @@ import { identity } from './utils/identity';
 
 import { useCompletionFocus } from './hooks/useCompletionFocus';
 import { uuidv4 } from './utils/UUID';
-
-/**
- * 语法面板的样式
- */
-const ProviderMenuStyle = styled(Menu)`
-  border-radius: 2px; /* ${(props) => props.theme['border-radius-base']}; */
-  border-color: #d9d9d9; /* ${(props) => props.theme['border-color-base']}; */
-  border-width: 1px;
-  border-style: solid;
-  box-shadow:  0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); /* ${(
-    props
-  ) => props.theme['box-shadow-base']}; */
-`;
-
-const DescStyle = styled.span`
-  color: rgba(0, 0, 0, 0.45); /* ${(props) =>
-    props.theme['text-color-secondary']}; */
-`;
-
-const OptionStyle = styled.div`
-  width: 240px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
 
 interface ProviderMenuProps {
   dataSource: CompletionItem[];
@@ -77,17 +51,17 @@ const ProviderMenu = ({
   return (
     <>
       {dataSource.length > 0 && (
-        <ProviderMenuStyle className={className} selectedKeys={selectedKeys}>
+        <Menu className={['provider-menu-style'].concat([className ?? '']).join(' ')} selectedKeys={selectedKeys}>
           {dataSource.map((opt) => (
             <Menu.Item key={opt.id} onClick={() => onSelect && onSelect(opt)}>
               <Space>
                 <Tag color={Colors[opt.tagName]}>{opt.tagName}</Tag>
-                <OptionStyle>{opt.label.replace(' ', '_')}</OptionStyle>
-                <DescStyle>{opt.desc}</DescStyle>
+                <span className='option-style'>{opt.label.replace(' ', '_')}</span>
+                <span className='desc-style'>{opt.desc}</span>
               </Space>
             </Menu.Item>
           ))}
-        </ProviderMenuStyle>
+        </Menu>
       )}
       {dataSource.length === 0 && (
         <Card size="small">
