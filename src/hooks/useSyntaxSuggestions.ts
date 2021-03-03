@@ -322,6 +322,14 @@ export function useSyntaxSuggestions(newUserInput: string, fieldOptionItems: Dis
           tagName: '符号',
         })
       }
+      if (s === WordType.slash) {
+        completions.push({
+          id: WordType.slash,
+          label: "/",
+          desc: '正则表达式',
+          tagName: '符号'
+        })
+      }
       if (s === WordType.limit && matchLastToken(WordType.limit)) {
         completions.push({
           id: WordType.limit,

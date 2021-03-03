@@ -75,6 +75,10 @@ export const lexer = createLexer([
     regExps: /^(")/,
   },
   {
+    type: WordType.slash,
+    regExps: /^(\/)/,
+  },
+  {
     type: WordType.pipe,
     regExps: /^(\|)/,
   },

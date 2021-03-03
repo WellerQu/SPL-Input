@@ -25,5 +25,6 @@ export enum WordType {
   any = 'any',
   one = 'one',
   aggregation = 'aggregation',
+  slash = 'slash',
   empty = '',
 }
