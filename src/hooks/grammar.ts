@@ -310,6 +310,7 @@ const connecterNode: (nextNode?: GrammarNode) => GrammarNode = (
     [WordType.whitespace]: () => ({
       ...fieldNode(),
       ...quoteNode(),
+      ...slashNode(),
       ...leftBracketNode(),
       ...nextNode,
     }),
@@ -321,6 +322,7 @@ const leftBracketNode: () => GrammarNode = () => ({
     ...leftBracketNode(),
     ...fieldNode(rightBracketNode()),
     ...quoteNode(rightBracketNode()),
+    ...slashNode(rightBracketNode()),
   }),
 });
 
@@ -355,6 +357,30 @@ const quoteNode: (nextNode?: GrammarNode) => GrammarNode = (nextNode = {}) => ({
   ...nextNode,
 });
 
+const nextSlashNode: (nextNode?: GrammarNode) => GrammarNode = (
+  nextNode = {}
+) => ({
+  [WordType.whitespace]: () => ({
+    [WordType.identifier]: () => ({
+      [WordType.slash]: () => nextSlashNode(nextNode),
+      ...nextSlashNode(nextNode)
+    }),
+    [WordType.slash]: () => nextSlashNode(nextNode),
+  }),
+  ...nextNode
+})
+
+const slashNode: (nextNode?: GrammarNode) => GrammarNode = (nextNode = {}) => ({
+  [WordType.slash]: () => ({
+    [WordType.identifier]: () => ({
+      ...nextSlashNode(),
+      [WordType.slash]: () => nextSlashNode(nextNode),
+    }),
+    ...nextSlashNode(nextNode),
+  }),
+  ...nextNode
+})
+
 const nextFieldNode: (nextNode?: GrammarNode) => GrammarNode = (
   nextNode = {}
 ) => ({
@@ -362,6 +388,7 @@ const nextFieldNode: (nextNode?: GrammarNode) => GrammarNode = (
     ...fieldNode(nextNode),
     ...connecterNode(nextNode),
     ...quoteNode(nextNode),
+    ...slashNode(nextNode),
     ...pipeNode({
       ...processNode(),
       ...commandNode(),
@@ -381,6 +408,7 @@ const fieldNode: (nextNode?: GrammarNode) => GrammarNode = (nextNode = {}) => ({
     [WordType.assign]: () => ({
       ...intervalNode(),
       ...quoteNode(nextNode),
+      ...slashNode(nextNode),
       ...valueNode(nextNode),
       [WordType.any]: () => nextFieldNode(nextNode),
       [WordType.one]: () => nextFieldNode(nextNode),
@@ -408,6 +436,7 @@ const searchAllNode: () => GrammarNode = () => ({
 const rootGrammar: GrammarNode = {
   ...fieldNode(),
   ...quoteNode(),
+  ...slashNode(),
   ...searchAllNode(),
   ...leftBracketNode(),
   [WordType.whitespace]: () => ({

@@ -25,9 +25,20 @@ const fields: DistinctField[] = [{
   valueType: FieldValueType.str,
 }]
 
+const Input = () => {
+  const [query, setQuery] = React.useState<string>('')
+  const handleChange = React.useCallback((value: string) => {
+    setQuery(value)
+  }, [])
+
+  return (
+    <div style={ { padding: 24 } }>
+      <QueryInput fieldOptionItems={ fields } value={query} onQueryChange={ handleChange } />
+    </div>
+  )
+}
+
 ReactDOM.render(
-  <div style={ { padding: 24 } }>
-    <QueryInput fieldOptionItems={fields} />
-  </div>,
+  <Input />,
   document.getElementById('root'),
 )
