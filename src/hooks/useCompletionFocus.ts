@@ -9,11 +9,11 @@ type ProxyEventHandler<T> = (e: T) => T
  * @returns 返回当前选中的项和递增/递减函数
  */
 export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => void): [
-  T | undefined, 
-  ProxyEventHandler<React.KeyboardEvent<Input>>, 
+  T | undefined,
+  ProxyEventHandler<React.KeyboardEvent<Input>>,
 ] {
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const current = useMemo<T | undefined>(() => 
+  const current = useMemo<T | undefined>(() =>
     dataSource[selectedIndex] ? dataSource[selectedIndex] : undefined, [dataSource, selectedIndex])
 
   // 索引递增

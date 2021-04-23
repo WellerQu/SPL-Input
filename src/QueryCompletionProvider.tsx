@@ -51,17 +51,22 @@ const ProviderMenu = ({
   return (
     <>
       {dataSource.length > 0 && (
-        <Menu className={['provider-menu-style'].concat([className ?? '']).join(' ')} selectedKeys={selectedKeys}>
-          {dataSource.map((opt) => (
-            <Menu.Item key={opt.id} onClick={() => onSelect && onSelect(opt)}>
-              <Space>
-                <Tag color={Colors[opt.tagName]}>{opt.tagName}</Tag>
-                <span className='option-style'>{opt.label.replace(' ', '_')}</span>
-                <span className='desc-style'>{opt.desc}</span>
-              </Space>
-            </Menu.Item>
-          ))}
-        </Menu>
+        <div className="spl-soureList">
+          <Menu className={['provider-menu-style'].concat([className ?? '']).join(' ')} selectedKeys={selectedKeys}>
+            {dataSource.map((opt) => (
+              <Menu.Item key={opt.id} onClick={() => onSelect && onSelect(opt)}>
+                <Space>
+                  <Tag color={Colors[opt.tagName]}>{opt.tagName}</Tag>
+                  <span className='option-style'>{opt.label.replace(' ', '_')}</span>
+                  <span className='desc-style'>{opt.desc}</span>
+                </Space>
+              </Menu.Item>
+            ))}
+          </Menu>
+          <div className="spl-desc">
+            11
+          </div>
+        </div>
       )}
       {dataSource.length === 0 && (
         <Card size="small">
