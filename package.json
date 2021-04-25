@@ -60,5 +60,8 @@
         }
       }
     ]
+  },
+  "dependencies": {
+    "spl-parser": "^2.3.1"
   }
 }

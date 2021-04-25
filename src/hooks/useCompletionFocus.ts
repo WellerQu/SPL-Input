@@ -10,15 +10,21 @@ type ProxyEventHandler<T> = (e: T) => T
  */
 export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => void): [
   T | undefined,
+  number,
   ProxyEventHandler<React.KeyboardEvent<Input>>,
+  SuggestionItem | null,
 ] {
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [curDataSource, setCurDataSource] = useState<SuggestionItem | null>(null)
+
   const current = useMemo<T | undefined>(() =>
     dataSource[selectedIndex] ? dataSource[selectedIndex] : undefined, [dataSource, selectedIndex])
 
   // 索引递增
   const increase = useCallback(() => {
     if (dataSource[selectedIndex + 1]) {
+      // TODO
+      setCurDataSource(dataSource[selectedIndex + 1] as any)
       return setSelectedIndex(selectedIndex + 1)
     }
   }, [dataSource, selectedIndex])
@@ -65,5 +71,5 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
     setSelectedIndex(0)
   }, [dataSource])
 
-  return [current, handleKeyEvent]
+  return [current, selectedIndex, handleKeyEvent, curDataSource]
 }

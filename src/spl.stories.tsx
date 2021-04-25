@@ -38,7 +38,7 @@ const Template: Story<ComponentProps<typeof QueryInput>> = (args) => {
 
   const [query, setQuery] = React.useState<string>('')
   const handleChange = React.useCallback((value: string) => {
-    setQuery(value)
+    // setQuery(value)
   }, [])
 
   return <QueryInput fieldOptionItems={fields} value={query} onQueryChange={handleChange} />

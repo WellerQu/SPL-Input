@@ -17,19 +17,19 @@ import { useCompletionFocus } from './hooks/useCompletionFocus';
 import { uuidv4 } from './utils/UUID';
 
 interface ProviderMenuProps {
-  dataSource: CompletionItem[];
+  dataSource: SuggestionItem[];
   selectedKey?: string;
   className?: string;
-  onSelect?: (item: CompletionItem) => void;
+  onSelect?: (item: SuggestionItem) => void;
 }
 
 const Colors: {
-  [key in Required<CompletionItem>['tagName']]: string;
+  [key in Required<SuggestionItem>['tag']]: string;
 } = {
   关键词: 'red',
   函数: 'orange',
   字段: 'gold',
-  数字: 'cyan',
+  通用: 'cyan',
   符号: 'magenta',
   算子: 'green',
   逻辑: 'volcano',
@@ -48,23 +48,29 @@ const ProviderMenu = ({
     selectedKey,
   ]);
 
+  const index = Number(selectedKey);
+  const curItem = dataSource[index];
+
   return (
     <>
       {dataSource.length > 0 && (
         <div className="spl-soureList">
           <Menu className={['provider-menu-style'].concat([className ?? '']).join(' ')} selectedKeys={selectedKeys}>
-            {dataSource.map((opt) => (
-              <Menu.Item key={opt.id} onClick={() => onSelect && onSelect(opt)}>
+            {dataSource.map((opt, index) => (
+              <Menu.Item key={index} onClick={() => onSelect && onSelect(opt)}>
                 <Space>
-                  <Tag color={Colors[opt.tagName]}>{opt.tagName}</Tag>
-                  <span className='option-style'>{opt.label.replace(' ', '_')}</span>
-                  <span className='desc-style'>{opt.desc}</span>
+                  <Tag color={Colors[opt.tag]}>{opt.tag}</Tag>
+                  <span className='option-style'>{opt.mapping.replace(' ', '_')}</span>
                 </Space>
               </Menu.Item>
             ))}
           </Menu>
           <div className="spl-desc">
-            11
+            样式暂丑：
+            <br />
+            {curItem.description}
+            <br />
+            {curItem.example ? `example: ${curItem.example}` : curItem.example}
           </div>
         </div>
       )}
@@ -84,7 +90,7 @@ export interface CompletionProviderProps {
   /**
    * 可能的语法提示项
    */
-  dataSource: CompletionItem[];
+  dataSource: SuggestionItem[];
   /**
    * 加载状态
    */
@@ -96,7 +102,7 @@ export interface CompletionProviderProps {
   /**
    * 按Tab或鼠标点击时, 提供所选则的提示项
    */
-  onCompletionSelect?: (item: CompletionItem) => void;
+  onCompletionSelect?: (item: SuggestionItem) => void;
 
   onQueryInputFocus?: () => void;
   onQueryInputBlur?: () => void;
@@ -120,12 +126,12 @@ export const QueryCompletionProvider = React.forwardRef<
     onCompletionSelect,
     ...rest
   } = props;
-  const [selectedItem, onKeyEvent] = useCompletionFocus<CompletionItem>(
+  const [, selectedIndex, onKeyEvent, curDataSource] = useCompletionFocus<SuggestionItem>(
     dataSource,
     onCompletionSelect
   );
-  const className = useMemo(() => `special-tag-${uuidv4()}`, []);
 
+  const className = useMemo(() => `special-tag-${uuidv4()}`, []);
   const getContainer = useCallback(
     () => document.querySelector(`.${className}`) as HTMLElement,
     [className]
@@ -133,7 +139,7 @@ export const QueryCompletionProvider = React.forwardRef<
 
   // 通过鼠标选择备选项
   const handleProviderSelect = useCallback(
-    (item: CompletionItem) => {
+    (item: SuggestionItem) => {
       onCompletionSelect && onCompletionSelect(item);
     },
     [onCompletionSelect]
@@ -186,7 +192,7 @@ export const QueryCompletionProvider = React.forwardRef<
         overlay={
           <ProviderMenu
             dataSource={dataSource}
-            selectedKey={selectedItem?.id}
+            selectedKey={`${selectedIndex}`}
             onSelect={handleProviderSelect}
           />
         }

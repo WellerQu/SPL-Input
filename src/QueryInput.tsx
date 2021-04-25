@@ -33,10 +33,11 @@ export const QueryInput: React.FC<QueryInputProps> = (props) => {
   const onQueryEnter = useMemo(() => props.onQueryEnter, [props.onQueryEnter]);
 
   const [showIntelliSense, setShowIntelliSense] = useState(false);
-  const [completionItems, refactorUserInput] = useSyntaxSuggestions(
+  const [SuggestionItems, refactorUserInput] = useSyntaxSuggestions(
     value,
     props.fieldOptionItems
   );
+
   const [autoFocus, setAutoFocus] = useState(false);
 
   const handleQueryChange = useCallback(
@@ -47,7 +48,7 @@ export const QueryInput: React.FC<QueryInputProps> = (props) => {
   );
 
   const handleQueryTab = useCallback(
-    (item: CompletionItem | undefined) => {
+    (item: SuggestionItem | undefined) => {
       item &&
         onQueryChange &&
         onQueryChange(refactorUserInput(item.label, true));
@@ -99,7 +100,7 @@ export const QueryInput: React.FC<QueryInputProps> = (props) => {
       value={value}
       loading={props.loading}
       visible={showIntelliSense}
-      dataSource={completionItems}
+      dataSource={SuggestionItems}
       placeholder="按Tab键获得查询语法提示, 按Enter键开始查询"
       onQueryInputFocus={handleQueryFocus}
       onQueryInputBlur={handleQueryCancel}
