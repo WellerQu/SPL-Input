@@ -1,10 +1,12 @@
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, useEffect } from 'react';
 import { Story } from '@storybook/react';
 
 import 'antd/dist/antd.css'
 
 import { DistinctField } from './hooks/useSyntaxSuggestions'
-
+import {
+  useSyntaxSuggestions
+} from './hooks/useSyntaxSuggestions';
 
 import { QueryInput, FieldValueType } from './index';
 import './index.css'
@@ -37,11 +39,30 @@ export default {
 const Template: Story<ComponentProps<typeof QueryInput>> = (args) => {
 
   const [query, setQuery] = React.useState<string>('')
-  const handleChange = React.useCallback((value: string) => {
-    // setQuery(value)
+
+  // 用户输入语法分析，返回提示
+  const [suggestionList] = useSyntaxSuggestions(
+    query,
+    fields
+  );
+
+  const handleChange = React.useCallback((e: React.FormEvent<HTMLInputElement>) => {
+    // 用户输入spl
+    const query = e.currentTarget.value
+    setQuery(query)
   }, [])
 
-  return <QueryInput fieldOptionItems={fields} value={query} onQueryChange={handleChange} />
+  const onQueryEnter = React.useCallback((spl: string) => {
+    // 回车搜索
+  }, [])
+
+  return <QueryInput
+    placeholder="按Tab键获得查询语法提示, 按Enter键开始查询"
+    defaultValue={query}
+    onInput={handleChange}
+    onQueryEnter={onQueryEnter}
+    suggestionItems={suggestionList}
+  />
 }
 
 export const FirstStory = Template.bind({});

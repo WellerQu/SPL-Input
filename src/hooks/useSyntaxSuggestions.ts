@@ -1,10 +1,7 @@
 // import { getAllFields } from '@/service/log/field/fieldService'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { FieldValueType } from '../FieldValueType'
-import { WordType } from '../WordType'
 import { getSuggestions } from 'spl-parser'
-
-import { lexer, parseToSuggestions, tokenize } from './grammar'
 
 export interface DistinctField {
   name: string
