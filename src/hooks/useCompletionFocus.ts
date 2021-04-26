@@ -1,5 +1,5 @@
 import Input from "antd/lib/input"
-import { useState, useMemo, useCallback, useEffect } from "react"
+import react, { useState, useMemo, useCallback, useEffect } from "react"
 
 type ProxyEventHandler<T> = (e: T) => T
 
@@ -9,16 +9,24 @@ type ProxyEventHandler<T> = (e: T) => T
  * @returns 返回当前选中的项和递增/递减函数
  */
 export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => void): [
-  T | undefined, 
-  ProxyEventHandler<React.KeyboardEvent<Input>>, 
+  T | null,
+  number,
+  T | null,
+  react.Dispatch<react.SetStateAction<number>>,
+  ProxyEventHandler<React.KeyboardEvent<Input>>,
+  react.Dispatch<react.SetStateAction<T | null>>
 ] {
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const current = useMemo<T | undefined>(() => 
-    dataSource[selectedIndex] ? dataSource[selectedIndex] : undefined, [dataSource, selectedIndex])
+
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const [curDataSource, setCurDataSource] = useState<T | null>(null)
+
+  const current = useMemo<T | null>(() =>
+    dataSource[selectedIndex] ? dataSource[selectedIndex] : null, [dataSource, selectedIndex])
 
   // 索引递增
   const increase = useCallback(() => {
     if (dataSource[selectedIndex + 1]) {
+      setCurDataSource(dataSource[selectedIndex + 1])
       return setSelectedIndex(selectedIndex + 1)
     }
   }, [dataSource, selectedIndex])
@@ -61,9 +69,10 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
     return e
   }, [decrease, increase, pick])
 
+  // 选中后清楚索引位置
   useEffect(() => {
-    setSelectedIndex(0)
+    setSelectedIndex(-1)
   }, [dataSource])
 
-  return [current, handleKeyEvent]
+  return [current, selectedIndex, curDataSource, setSelectedIndex, handleKeyEvent, setCurDataSource]
 }

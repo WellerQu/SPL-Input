@@ -1,9 +1,34 @@
+.spl-soureList {
+  padding: 10px;
+  display: flex;
+  width: 100%;
+  border: 1px solid #d9d9d9;
+  background-color: #fff;
+}
+
+.spl-soureList ul:first-child{
+  width: 40%;
+}
+
+.spl-desc{
+  flex: 1;
+  padding: 10px;
+}
+
 .provider-menu-style {
-  border-radius: 2px; /* ${(props) => props.theme['border-radius-base']}; */
-  border-color: #d9d9d9; /* ${(props) => props.theme['border-color-base']}; */
-  border-width: 1px;
-  border-style: solid;
-  box-shadow:  0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05); /* ${( props) => props.theme['box-shadow-base']}; */ 
+  width: 50%;
+  border-right: none;
+}
+
+.provider-menu-style li{
+  margin: 0!important;
+  padding: 4px 16px!important;
+  border-right: 1px solid #d9d9d9;
+  transition: border-color 0s;
+}
+
+.provider-menu-style .ant-menu-item-selected{
+  border-right: none!important;
 }
 
 .desc-style {
