@@ -143,12 +143,10 @@ export const QueryInput = React.forwardRef<
   const [inputValue, setInputValue] = useState(String)
 
   const [
-    ,
+    current,
     selectedIndex,
-    curDataSource,
-    setSelectedIndex,
+    reset,
     onKeyEvent,
-    setCurDataSource
   ] = useCompletionFocus<SuggestionItem>(
     suggestionItems,
     onCompletionSelect
@@ -166,13 +164,13 @@ export const QueryInput = React.forwardRef<
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         setShowIntelliSense(false);
-        setInputValue(`${inputValue}${curDataSource ? curDataSource.code : ''}`)
+        setInputValue(`${inputValue}${current ? current.code : ''}`)
         !showIntelliSense && onQueryEnter && onQueryEnter(inputValue)
       } else {
         setShowIntelliSense(true);
       }
     },
-    [inputValue, curDataSource, showIntelliSense]
+    [inputValue, current, showIntelliSense, onQueryEnter]
   );
 
   useEffect(() => {
@@ -212,10 +210,9 @@ export const QueryInput = React.forwardRef<
 
   useEffect(() => {
     if (!showIntelliSense) {
-      setCurDataSource(null)
-      setSelectedIndex(-1)
+      reset()
     }
-  }, [showIntelliSense])
+  }, [reset, showIntelliSense])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -253,7 +250,7 @@ export const QueryInput = React.forwardRef<
       addonAfter: loading ? <LoadingOutlined /> : null,
       onKeyDown: compose(handleKeyDown ?? identity, onKeyEvent),
     }),
-    [loading, onKeyEvent, ref, rest]
+    [handleKeyDown, loading, onInput, onKeyEvent, ref, rest]
   );
 
   return (

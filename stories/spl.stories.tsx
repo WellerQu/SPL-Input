@@ -1,33 +1,12 @@
-import React, { ComponentProps, useEffect } from 'react';
+/// <reference types="../typings/spl" />
+ 
+import React, { ComponentProps } from 'react';
 import { Story } from '@storybook/react';
 
 import 'antd/dist/antd.css'
 
-import { DistinctField } from './hooks/useSyntaxSuggestions'
-import {
-  useSyntaxSuggestions
-} from './hooks/useSyntaxSuggestions';
-
-import { QueryInput, FieldValueType } from './index';
+import { QueryInput } from '../src/index';
 import './index.css'
-
-const fields: DistinctField[] = [{
-  name: 'application',
-  valueType: FieldValueType.str,
-  status: true,
-}, {
-  name: 'service',
-  valueType: FieldValueType.str,
-  status: true,
-}, {
-  name: 'host',
-  valueType: FieldValueType.str,
-  status: true,
-}, {
-  name: 'level',
-  valueType: FieldValueType.num,
-  status: true,
-}]
 
 //👇 This default export determines where your story goes in the story list
 export default {

@@ -21,9 +21,7 @@
     "outDir": "dist"
   },
   "include": [
-    "src"
-  ],
-  "exclude": [
-    "src/spl.stories.tsx"
+    "src",
+    "typings"
   ]
 }

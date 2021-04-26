@@ -11,14 +11,11 @@ type ProxyEventHandler<T> = (e: T) => T
 export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => void): [
   T | null,
   number,
-  T | null,
-  react.Dispatch<react.SetStateAction<number>>,
+  () => void,
   ProxyEventHandler<React.KeyboardEvent<Input>>,
-  react.Dispatch<react.SetStateAction<T | null>>
 ] {
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
-  const [curDataSource, setCurDataSource] = useState<T | null>(null)
 
   const current = useMemo<T | null>(() =>
     dataSource[selectedIndex] ? dataSource[selectedIndex] : null, [dataSource, selectedIndex])
@@ -26,7 +23,6 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
   // 索引递增
   const increase = useCallback(() => {
     if (dataSource[selectedIndex + 1]) {
-      setCurDataSource(dataSource[selectedIndex + 1])
       return setSelectedIndex(selectedIndex + 1)
     }
   }, [dataSource, selectedIndex])
@@ -69,10 +65,14 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
     return e
   }, [decrease, increase, pick])
 
+  const reset = useCallback(() => {
+    setSelectedIndex(-1)
+  }, [])
+
   // 选中后清楚索引位置
   useEffect(() => {
-    setSelectedIndex(-1)
-  }, [dataSource])
+    reset
+  }, [dataSource, reset])
 
-  return [current, selectedIndex, curDataSource, setSelectedIndex, handleKeyEvent, setCurDataSource]
+  return [current, selectedIndex, reset, handleKeyEvent]
 }
