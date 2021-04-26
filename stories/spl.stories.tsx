@@ -6,7 +6,7 @@ import { Story } from '@storybook/react';
 import 'antd/dist/antd.css'
 
 import { QueryInput } from '../src/index';
-import './index.css'
+import '../src/index.css'
 
 //👇 This default export determines where your story goes in the story list
 export default {

@@ -5,13 +5,13 @@
   "main": "dist/index.js",
   "typings": "dist",
   "scripts": {
-    "start": "npm run storybook",
     "prepare": "install-peers",
     "build": "rm -rf dist && tsc --build tsconfig.json && cp src/index.css dist/spl-input.css",
     "lint": "eslint src/**/* --fix",
     "prepublishOnly": "npm run lint && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "start-storybook -p 6006 -s public"
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "author": "qiuwei",
   "license": "ISC",
@@ -27,11 +27,10 @@
     "@storybook/addon-actions": "^6.2.9",
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
-    "@storybook/node-logger": "^6.2.9",
-    "@storybook/preset-create-react-app": "^3.1.7",
     "@storybook/react": "^6.2.9",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
     "@typescript-eslint/parser": "^4.14.0",
+    "babel-loader": "^8.2.2",
     "eslint": "^7.18.0",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -69,5 +68,6 @@
         }
       }
     ]
-  }
+  },
+  "dependencies": {}
 }

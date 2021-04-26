@@ -1,5 +1,5 @@
 import Input from "antd/lib/input"
-import react, { useState, useMemo, useCallback, useEffect } from "react"
+import React, { useState, useMemo, useCallback, useEffect } from "react"
 
 type ProxyEventHandler<T> = (e: T) => T
 
