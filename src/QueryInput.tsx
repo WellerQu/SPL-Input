@@ -89,6 +89,10 @@ const ProviderMenu = ({
 
 export interface CompletionProviderProps {
   /**
+   * 语法提示列表
+   */
+  suggestionItems: SuggestionItem[];
+  /**
    * 默认值
    */
   defaultValue?: string;
@@ -101,9 +105,9 @@ export interface CompletionProviderProps {
    */
   visible?: boolean;
   /**
-   * 提示列表
+   * 回车
    */
-  suggestionItems: SuggestionItem[];
+  onQueryEnter: (spl: string) => void;
   /**
    * 鼠标选择
    */
@@ -111,11 +115,7 @@ export interface CompletionProviderProps {
   /**
    * 输入改变
    */
-  onInput: (event: React.FormEvent<HTMLInputElement>) => void;
-  /**
-   * 回车
-   */
-  onQueryEnter?: (spl: string) => void;
+  onInput?: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
 type CompletionProviderType = InputProps & CompletionProviderProps;
@@ -140,7 +140,6 @@ export const QueryInput = React.forwardRef<
   const defaultValue = useMemo(() => props.defaultValue ?? '', [props.defaultValue]);
 
   const [showIntelliSense, setShowIntelliSense] = useState(false);
-
   const [inputValue, setInputValue] = useState(String)
 
   const [
@@ -205,7 +204,11 @@ export const QueryInput = React.forwardRef<
 
   useEffect(() => {
     setInputValue(defaultValue)
-  }, [])
+  }, [defaultValue])
+
+  useEffect(() => {
+    visible && setShowIntelliSense(visible)
+  }, [visible])
 
   useEffect(() => {
     if (!showIntelliSense) {
@@ -244,7 +247,7 @@ export const QueryInput = React.forwardRef<
       ...rest,
       onInput: (e: React.FormEvent<HTMLInputElement>) => {
         setInputValue(e.currentTarget?.value)
-        onInput(e)
+        onInput && onInput(e)
       },
       ref: ref,
       addonAfter: loading ? <LoadingOutlined /> : null,
