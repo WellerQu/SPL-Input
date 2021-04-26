@@ -60,7 +60,7 @@ const ProviderMenu = ({
               <Menu.Item key={index} onClick={() => onSelect && onSelect(opt)}>
                 <Space>
                   <Tag color={Colors[opt.tag]}>{opt.tag}</Tag>
-                  <span className='option-style'>{opt.mapping.replace(' ', '_')}</span>
+                  <span className='option-style'>{opt.label}</span>
                 </Space>
               </Menu.Item>
             ))}
@@ -95,7 +95,7 @@ export interface CompletionProviderProps {
   /**
    * 默认值
    */
-  defaultValue?: string;
+  value?: string;
   /**
    * 加载状态
    */
@@ -105,17 +105,17 @@ export interface CompletionProviderProps {
    */
   visible?: boolean;
   /**
-   * 回车
-   */
-  onQueryEnter: (spl: string) => void;
-  /**
    * 鼠标选择
    */
   onCompletionSelect?: (item: SuggestionItem) => void;
   /**
+   * 回车
+   */
+  onQueryEnter?: (spl: string) => void;
+  /**
    * 输入改变
    */
-  onInput?: (event: React.FormEvent<HTMLInputElement>) => void;
+  onQueryChange?: (value: string) => void;
 }
 
 type CompletionProviderType = InputProps & CompletionProviderProps;
@@ -131,16 +131,15 @@ export const QueryInput = React.forwardRef<
     loading,
     visible = false,
     onCompletionSelect,
-    onInput,
+    onQueryChange,
     onQueryEnter,
     suggestionItems,
+    value,
     ...rest
   } = props;
 
-  const defaultValue = useMemo(() => props.defaultValue ?? '', [props.defaultValue]);
-
   const [showIntelliSense, setShowIntelliSense] = useState(false);
-  const [inputValue, setInputValue] = useState(String)
+  const [enterSelectedVal, setEnterSelectedVal] = useState('');
 
   const [
     current,
@@ -164,14 +163,20 @@ export const QueryInput = React.forwardRef<
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         setShowIntelliSense(false);
-        setInputValue(`${inputValue}${current ? current.code : ''}`)
-        !showIntelliSense && onQueryEnter && onQueryEnter(inputValue)
+        setEnterSelectedVal(current?.code ?? '');
       } else {
         setShowIntelliSense(true);
       }
     },
-    [inputValue, current, showIntelliSense, onQueryEnter]
+    [current]
   );
+
+  useEffect(() => {
+    if (!showIntelliSense && enterSelectedVal !== '') {
+      setEnterSelectedVal('')
+      onQueryEnter && onQueryEnter(`${value}${enterSelectedVal}`)
+    }
+  }, [showIntelliSense, value, enterSelectedVal, onQueryEnter])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -198,11 +203,7 @@ export const QueryInput = React.forwardRef<
       onCompletionSelect && onCompletionSelect(item);
     },
     [onCompletionSelect]
-  );
-
-  useEffect(() => {
-    setInputValue(defaultValue)
-  }, [defaultValue])
+  )
 
   useEffect(() => {
     visible && setShowIntelliSense(visible)
@@ -242,15 +243,14 @@ export const QueryInput = React.forwardRef<
   const composedProps = useMemo<InputProps>(
     () => ({
       ...rest,
-      onInput: (e: React.FormEvent<HTMLInputElement>) => {
-        setInputValue(e.currentTarget?.value)
-        onInput && onInput(e)
-      },
       ref: ref,
+      onInput: (e: React.FormEvent<HTMLInputElement>) => {
+        onQueryChange && onQueryChange(e.currentTarget.value)
+      },
       addonAfter: loading ? <LoadingOutlined /> : null,
       onKeyDown: compose(handleKeyDown ?? identity, onKeyEvent),
     }),
-    [handleKeyDown, loading, onInput, onKeyEvent, ref, rest]
+    [handleKeyDown, loading, onQueryChange, onKeyEvent, ref, rest]
   );
 
   return (
@@ -272,7 +272,7 @@ export const QueryInput = React.forwardRef<
       >
         <Input
           {...composedProps}
-          value={inputValue}
+          value={value}
         />
       </Dropdown>
     </div>

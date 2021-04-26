@@ -1,12 +1,12 @@
 /// <reference types="../typings/spl" />
- 
+
 import React, { ComponentProps } from 'react';
 import { Story } from '@storybook/react';
 
 import 'antd/dist/antd.css'
 
-import { QueryInput } from '../src/index';
-import '../src/index.css'
+import { QueryInput } from './index';
+import './index.css'
 
 //👇 This default export determines where your story goes in the story list
 export default {
@@ -22,24 +22,23 @@ const suggestionList: SuggestionItem[] = [
 ]
 
 //👇 We create a “template” of how args map to rendering
-const Template: Story<ComponentProps<typeof QueryInput>> = (args) => {
+const Template: Story<ComponentProps<typeof QueryInput>> = () => {
 
   const [query, setQuery] = React.useState<string>('')
 
-  const handleChange = React.useCallback((e: React.FormEvent<HTMLInputElement>) => {
-    // 用户输入spl
-    const query = e.currentTarget.value
-    setQuery(query)
+  const handleChange = React.useCallback((value: string) => {
+    setQuery(value)
   }, [])
 
-  const onQueryEnter = React.useCallback((spl: string) => {
+  const onQueryEnter = React.useCallback((value: string) => {
     // 回车搜索
+    setQuery(value)
   }, [])
 
   return <QueryInput
-    placeholder="按Tab键获得查询语法提示, 按Enter键开始查询"
-    defaultValue={query}
-    onInput={handleChange}
+    placeholder="按Enter键选中语法提示选项"
+    value={query}
+    onQueryChange={handleChange}
     onQueryEnter={onQueryEnter}
     suggestionItems={suggestionList}
   />
