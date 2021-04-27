@@ -199,9 +199,10 @@ export const QueryInput = React.forwardRef<
   // 通过鼠标选择备选项
   const handleProviderSelect = useCallback(
     (item: SuggestionItem) => {
-      onCompletionSelect && onCompletionSelect(item);
+      setShowIntelliSense(false);
+      onQueryChange && onQueryChange(`${value}${item.code}`);
     },
-    [onCompletionSelect]
+    [onQueryChange, value]
   )
 
   useEffect(() => {
