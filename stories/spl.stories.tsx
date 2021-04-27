@@ -32,7 +32,6 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
 
   const onQueryEnter = React.useCallback((value: string) => {
     // 回车
-    console.log(value, '------回车------')
   }, [])
 
   return <QueryInput
