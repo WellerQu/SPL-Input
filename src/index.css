@@ -1,4 +1,4 @@
-.spl-soureList {
+.spl-sourceList {
   padding: 10px;
   display: flex;
   width: 100%;
@@ -6,13 +6,22 @@
   background-color: #fff;
 }
 
-.spl-soureList ul:first-child{
-  width: 40%;
+.spl-sourceList ul:first-child{
+  width: 45%;
 }
 
 .spl-desc{
   flex: 1;
   padding: 10px;
+}
+
+.spl-syntax-error{
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+}
+
+.spl-input > input{
+  padding: 8px 16px;
 }
 
 .provider-menu-style {

@@ -54,20 +54,21 @@ const ProviderMenu = ({
   return (
     <>
       {dataSource.length > 0 && (
-        <div className="spl-soureList">
+        <div className="spl-sourceList">
           <Menu className={['provider-menu-style'].concat([className ?? '']).join(' ')} selectedKeys={selectedKeys}>
             {dataSource.map((opt, index) => (
               <Menu.Item key={index} onClick={() => onSelect && onSelect(opt)}>
                 <Space>
                   <Tag color={Colors[opt.tag]}>{opt.tag}</Tag>
                   <span className='option-style'>{opt.label}</span>
+                  <span>{opt.description}</span>
                 </Space>
               </Menu.Item>
             ))}
           </Menu>
           {
             curItem && <div className="spl-desc">
-              {curItem.description}
+              {curItem.syntax ? `语法：${curItem.syntax}` : curItem.syntax}
               <br />
               <br />
               {curItem.example ? `example: ${curItem.example}` : curItem.example}
@@ -105,6 +106,10 @@ export interface CompletionProviderProps {
    */
   visible?: boolean;
   /**
+   * 错误提示
+   */
+  error?: string;
+  /**
    * 鼠标选择
    */
   onCompletionSelect?: (item: SuggestionItem) => void;
@@ -135,6 +140,7 @@ export const QueryInput = React.forwardRef<
     onQueryEnter,
     suggestionItems,
     value,
+    error,
     ...rest
   } = props;
 
@@ -253,21 +259,27 @@ export const QueryInput = React.forwardRef<
     [handleKeyDown, loading, onQueryChange, onKeyEvent, ref, rest]
   );
 
+
+  let menu
+  if (error) {
+    menu = <div className="spl-sourceList spl-syntax-error">{error}</div>
+  } else {
+    menu = <ProviderMenu
+      dataSource={suggestionItems}
+      selectedKey={`${selectedIndex}`}
+      onSelect={handleProviderSelect}
+    />;
+  }
+
   return (
     <div
-      className={className}
+      className={`spl-input ${className}`}
       onFocus={handleQueryFocus}
       style={{ width: '100%' }}
     >
       <Dropdown
         getPopupContainer={getContainer}
-        overlay={
-          <ProviderMenu
-            dataSource={suggestionItems}
-            selectedKey={`${selectedIndex}`}
-            onSelect={handleProviderSelect}
-          />
-        }
+        overlay={menu}
         visible={showIntelliSense}
       >
         <Input
