@@ -94,7 +94,7 @@ export interface CompletionProviderProps {
    */
   suggestionItems: SuggestionItem[];
   /**
-   * 默认值
+   * 值
    */
   value?: string;
   /**
@@ -139,13 +139,12 @@ export const QueryInput = React.forwardRef<
     onQueryChange,
     onQueryEnter,
     suggestionItems,
-    value,
+    value = '',
     error,
     ...rest
   } = props;
 
   const [showIntelliSense, setShowIntelliSense] = useState(false);
-  const [enterSelectedVal, setEnterSelectedVal] = useState('');
 
   const [
     current,
@@ -169,20 +168,14 @@ export const QueryInput = React.forwardRef<
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         setShowIntelliSense(false);
-        setEnterSelectedVal(current?.code ?? '');
+        onQueryChange && onQueryChange(`${value}${current?.code ?? ''}`)
+        !showIntelliSense && onQueryEnter && onQueryEnter(`${value}${current?.code ?? ''}`)
       } else {
         setShowIntelliSense(true);
       }
     },
-    [current]
+    [showIntelliSense, value, current, onQueryEnter]
   );
-
-  useEffect(() => {
-    if (!showIntelliSense && enterSelectedVal !== '') {
-      setEnterSelectedVal('')
-      onQueryEnter && onQueryEnter(`${value}${enterSelectedVal}`)
-    }
-  }, [showIntelliSense, value, enterSelectedVal, onQueryEnter])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
