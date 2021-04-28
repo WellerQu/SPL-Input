@@ -54,20 +54,21 @@ const ProviderMenu = ({
   return (
     <>
       {dataSource.length > 0 && (
-        <div className="spl-soureList">
+        <div className="spl-sourceList">
           <Menu className={['provider-menu-style'].concat([className ?? '']).join(' ')} selectedKeys={selectedKeys}>
             {dataSource.map((opt, index) => (
               <Menu.Item key={index} onClick={() => onSelect && onSelect(opt)}>
                 <Space>
                   <Tag color={Colors[opt.tag]}>{opt.tag}</Tag>
-                  <span className='option-style'>{opt.mapping.replace(' ', '_')}</span>
+                  <span className='option-style'>{opt.label}</span>
+                  <span>{opt.description}</span>
                 </Space>
               </Menu.Item>
             ))}
           </Menu>
           {
             curItem && <div className="spl-desc">
-              {curItem.description}
+              {curItem.syntax ? `语法：${curItem.syntax}` : curItem.syntax}
               <br />
               <br />
               {curItem.example ? `example: ${curItem.example}` : curItem.example}
@@ -87,15 +88,27 @@ const ProviderMenu = ({
   );
 };
 
+/**
+* 选中语法替换规则
+*/
+const combinationSpl = (value: string, code: string) => {
+
+  const regex = /\s+[a-zA-Z]+$/
+  if (regex.test(code) && /^[A-Za-z]+$/.test(code)) {
+    return value.replace(regex, code)
+  }
+  return `${value}${code}`
+}
+
 export interface CompletionProviderProps {
   /**
    * 语法提示列表
    */
   suggestionItems: SuggestionItem[];
   /**
-   * 默认值
+   * 值
    */
-  defaultValue?: string;
+  value: string;
   /**
    * 加载状态
    */
@@ -105,17 +118,21 @@ export interface CompletionProviderProps {
    */
   visible?: boolean;
   /**
-   * 回车
+   * 错误提示
    */
-  onQueryEnter: (spl: string) => void;
+  error?: string;
   /**
    * 鼠标选择
    */
   onCompletionSelect?: (item: SuggestionItem) => void;
   /**
-   * 输入改变
+   * 回车查询事件
    */
-  onInput?: (event: React.FormEvent<HTMLInputElement>) => void;
+  onQueryEnter?: (spl: string) => void;
+  /**
+   * 输入改变事件
+   */
+  onQueryChange: (value: string) => void;
 }
 
 type CompletionProviderType = InputProps & CompletionProviderProps;
@@ -131,16 +148,15 @@ export const QueryInput = React.forwardRef<
     loading,
     visible = false,
     onCompletionSelect,
-    onInput,
+    onQueryChange,
     onQueryEnter,
     suggestionItems,
+    value = '',
+    error,
     ...rest
   } = props;
 
-  const defaultValue = useMemo(() => props.defaultValue ?? '', [props.defaultValue]);
-
   const [showIntelliSense, setShowIntelliSense] = useState(false);
-  const [inputValue, setInputValue] = useState(String)
 
   const [
     current,
@@ -164,13 +180,14 @@ export const QueryInput = React.forwardRef<
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         setShowIntelliSense(false);
-        setInputValue(`${inputValue}${current ? current.code : ''}`)
-        !showIntelliSense && onQueryEnter && onQueryEnter(inputValue)
+        const val = combinationSpl(value, current?.code ?? '')
+        onQueryChange && onQueryChange(val)
+        !showIntelliSense && onQueryEnter && onQueryEnter(val)
       } else {
         setShowIntelliSense(true);
       }
     },
-    [inputValue, current, showIntelliSense, onQueryEnter]
+    [showIntelliSense, value, current, onQueryEnter]
   );
 
   useEffect(() => {
@@ -195,14 +212,12 @@ export const QueryInput = React.forwardRef<
   // 通过鼠标选择备选项
   const handleProviderSelect = useCallback(
     (item: SuggestionItem) => {
-      onCompletionSelect && onCompletionSelect(item);
+      setShowIntelliSense(false);
+      const val = combinationSpl(value, item?.code ?? '');
+      onQueryChange && onQueryChange(val);
     },
-    [onCompletionSelect]
+    [onQueryChange, value]
   );
-
-  useEffect(() => {
-    setInputValue(defaultValue)
-  }, [defaultValue])
 
   useEffect(() => {
     visible && setShowIntelliSense(visible)
@@ -242,37 +257,41 @@ export const QueryInput = React.forwardRef<
   const composedProps = useMemo<InputProps>(
     () => ({
       ...rest,
-      onInput: (e: React.FormEvent<HTMLInputElement>) => {
-        setInputValue(e.currentTarget?.value)
-        onInput && onInput(e)
-      },
       ref: ref,
+      onInput: (e: React.FormEvent<HTMLInputElement>) => {
+        onQueryChange && onQueryChange(e.currentTarget.value)
+      },
       addonAfter: loading ? <LoadingOutlined /> : null,
       onKeyDown: compose(handleKeyDown ?? identity, onKeyEvent),
     }),
-    [handleKeyDown, loading, onInput, onKeyEvent, ref, rest]
+    [handleKeyDown, loading, onQueryChange, onKeyEvent, ref, rest]
   );
+
+  let menu
+  if (error) {
+    menu = <div className="spl-sourceList spl-syntax-error">{error}</div>
+  } else {
+    menu = <ProviderMenu
+      dataSource={suggestionItems}
+      selectedKey={`${selectedIndex}`}
+      onSelect={handleProviderSelect}
+    />;
+  }
 
   return (
     <div
-      className={className}
+      className={`spl-input ${className}`}
       onFocus={handleQueryFocus}
       style={{ width: '100%' }}
     >
       <Dropdown
         getPopupContainer={getContainer}
-        overlay={
-          <ProviderMenu
-            dataSource={suggestionItems}
-            selectedKey={`${selectedIndex}`}
-            onSelect={handleProviderSelect}
-          />
-        }
+        overlay={menu}
         visible={showIntelliSense}
       >
         <Input
           {...composedProps}
-          value={inputValue}
+          value={value}
         />
       </Dropdown>
     </div>

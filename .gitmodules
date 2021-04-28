@@ -1,0 +1,4 @@
+[submodule "spl-parser"]
+	path = spl-parser
+	url = https://code.bizseer.com/frontend/spl-parser.git
+  branch = master
