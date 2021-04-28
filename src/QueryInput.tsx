@@ -15,7 +15,6 @@ import { identity } from './utils/identity';
 
 import { useCompletionFocus } from './hooks/useCompletionFocus';
 import { uuidv4 } from './utils/UUID';
-import generatePicker from 'antd/lib/date-picker/generatePicker';
 
 interface ProviderMenuProps {
   dataSource: SuggestionItem[];
@@ -94,11 +93,10 @@ const ProviderMenu = ({
 */
 const combinationSpl = (value: string, code: string) => {
 
-  const regex = /[a-zA-Z]+$/
-  if (regex.test(code)) {
+  const regex = /\s+[a-zA-Z]+$/
+  if (regex.test(code) && /^[A-Za-z]+$/.test(code)) {
     return value.replace(regex, code)
   }
-
   return `${value}${code}`
 }
 
@@ -128,11 +126,11 @@ export interface CompletionProviderProps {
    */
   onCompletionSelect?: (item: SuggestionItem) => void;
   /**
-   * 回车
+   * 回车查询事件
    */
   onQueryEnter?: (spl: string) => void;
   /**
-   * 输入改变
+   * 输入改变事件
    */
   onQueryChange: (value: string) => void;
 }
@@ -268,7 +266,6 @@ export const QueryInput = React.forwardRef<
     }),
     [handleKeyDown, loading, onQueryChange, onKeyEvent, ref, rest]
   );
-
 
   let menu
   if (error) {

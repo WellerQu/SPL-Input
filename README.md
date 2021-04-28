@@ -15,24 +15,33 @@ import * as ReactDOM from 'react-dom'
 // 导入 spl-input 包
 import { QueryInput } from 'spl-input'
 
+// 导入语法提示/错误提示方法
+import { getSuggestions } from 'spl-parser'
+
 // 导入 css 文件
 import 'spl-input/spl-input.css'
 
-const suggestionList: SuggestionItem[] = [
-  { "label": "可选字段", "tag": "字段", "mapping": "fieldName", "code": "" },
-  { "label": "否定", "tag": "逻辑", "mapping": "not", "code": "NOT", "description": "查询条件的逻辑否定修饰符, 条件的逆命题", "syntax": "NOT <条件>", "example": "NOT host" },
-  { "label": "_exists_", "tag": "关键词", "mapping": "_exists_", "code": "_exists_", "description": "查找拥有<字段名>的日志原文", "syntax": "_exists_=<字段名>", "example": "_exists_=fieldName" }
-]
+const [suggestionList, setSuggestionList] = useState<SuggestionItem[]>([])
 
 const [query, setQuery] = React.useState<string>('')
+const [error, setError] = useState<string>()
 
 const handleChange = React.useCallback((value: string) => {
-  // 输入改变回调
+  // 输入改变事件
   setQuery(value)
+  const [suggestionList, error] = getSuggestions(value)
+  setSuggestionList(suggestionList)
+  setError(undefined)
+  error ? setError(`非预期的字符${error}`) : setError(undefined)
 }, [])
 
 const onQueryEnter = React.useCallback((value: string) => {
-  // 回车事件回调
+  // 回车查询事件
+}, [])
+
+useEffect(() => {
+  const [suggestionList] = getSuggestions('')
+  setSuggestionList(suggestionList)
 }, [])
 
 ReactDOM.render(
@@ -40,6 +49,7 @@ ReactDOM.render(
     {/* QueryInput 即带有语法提示的文本框 */}
     <QueryInput 
       value={query}
+      error={error}
       onQueryChange={handleChange}
       onQueryEnter={onQueryEnter}
       suggestionItems={suggestionList}
@@ -55,6 +65,7 @@ ReactDOM.render(
 | --------------- | -------- | ----------------------- | -------------------------------------------------- |
 | suggestionItems | 必填     | SuggestionItem[]        | 语法提示列表                                       |
 | value           | 必选     | string                  | 输入框中的字符串                                   |
+| error           | 可选     | string                  | 语法错误提示                                       |
 | loading         | 可选     | boolean                 | 输入框目前是否处于正在加载数据的状态               |
 | onQueryChange   | 必选     | (query: string) => void | 输入框内容变化事件, 选择推荐条目或键入字符均会触发 |
 | onQueryEnter    | 可选     | () => void              | 回车按下事件, 按下Enter时触发                      |

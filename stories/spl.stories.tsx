@@ -19,11 +19,14 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
 
   const [query, setQuery] = useState<string>('')
   const [suggestionList, setSuggestionList] = useState<SuggestionItem[]>([])
+  const [error, setError] = useState<string>()
 
   const handleChange = useCallback((value: string) => {
     setQuery(value)
-    const [suggestionList] = getSuggestions(value)
+    const [suggestionList, error] = getSuggestions(value)
     setSuggestionList(suggestionList)
+    setError(undefined)
+    error ? setError(`非预期的字符${error}`) : setError(undefined)
   }, [])
 
   useEffect(() => {
@@ -32,12 +35,13 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
   }, [])
 
   const onQueryEnter = useCallback((value: string) => {
-    // 回车
+    // 回车查询事件
   }, [])
 
   return <QueryInput
     placeholder="按Enter键选中语法提示选项"
     value={query}
+    error={error}
     onQueryChange={handleChange}
     onQueryEnter={onQueryEnter}
     suggestionItems={suggestionList}
