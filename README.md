@@ -54,7 +54,7 @@ ReactDOM.render(
 | 属性名          | 是否可选 | 数据类型                | 描述                                               |
 | --------------- | -------- | ----------------------- | -------------------------------------------------- |
 | suggestionItems | 必填     | SuggestionItem[]        | 语法提示列表                                       |
-| value           | 可选     | string                  | 输入框中的字符串                                   |
+| value           | 必选     | string                  | 输入框中的字符串                                   |
 | loading         | 可选     | boolean                 | 输入框目前是否处于正在加载数据的状态               |
+| onQueryChange   | 必选     | (query: string) => void | 输入框内容变化事件, 选择推荐条目或键入字符均会触发 |
 | onQueryEnter    | 可选     | () => void              | 回车按下事件, 按下Enter时触发                      |
-| onQueryChange   | 可选     | (query: string) => void | 输入框内容变化事件, 选择推荐条目或键入字符均会触发 |

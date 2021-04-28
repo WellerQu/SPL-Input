@@ -15,6 +15,7 @@ import { identity } from './utils/identity';
 
 import { useCompletionFocus } from './hooks/useCompletionFocus';
 import { uuidv4 } from './utils/UUID';
+import generatePicker from 'antd/lib/date-picker/generatePicker';
 
 interface ProviderMenuProps {
   dataSource: SuggestionItem[];
@@ -88,6 +89,19 @@ const ProviderMenu = ({
   );
 };
 
+/**
+* 选中语法替换规则
+*/
+const combinationSpl = (value: string, code: string) => {
+
+  const regex = /[a-zA-Z]+$/
+  if (regex.test(code)) {
+    return value.replace(regex, code)
+  }
+
+  return `${value}${code}`
+}
+
 export interface CompletionProviderProps {
   /**
    * 语法提示列表
@@ -96,7 +110,7 @@ export interface CompletionProviderProps {
   /**
    * 值
    */
-  value?: string;
+  value: string;
   /**
    * 加载状态
    */
@@ -120,7 +134,7 @@ export interface CompletionProviderProps {
   /**
    * 输入改变
    */
-  onQueryChange?: (value: string) => void;
+  onQueryChange: (value: string) => void;
 }
 
 type CompletionProviderType = InputProps & CompletionProviderProps;
@@ -168,8 +182,9 @@ export const QueryInput = React.forwardRef<
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         setShowIntelliSense(false);
-        onQueryChange && onQueryChange(`${value}${current?.code ?? ''}`)
-        !showIntelliSense && onQueryEnter && onQueryEnter(`${value}${current?.code ?? ''}`)
+        const val = combinationSpl(value, current?.code ?? '')
+        onQueryChange && onQueryChange(val)
+        !showIntelliSense && onQueryEnter && onQueryEnter(val)
       } else {
         setShowIntelliSense(true);
       }
@@ -200,10 +215,11 @@ export const QueryInput = React.forwardRef<
   const handleProviderSelect = useCallback(
     (item: SuggestionItem) => {
       setShowIntelliSense(false);
-      onQueryChange && onQueryChange(`${value}${item.code}`);
+      const val = combinationSpl(value, item?.code ?? '');
+      onQueryChange && onQueryChange(val);
     },
     [onQueryChange, value]
-  )
+  );
 
   useEffect(() => {
     visible && setShowIntelliSense(visible)
