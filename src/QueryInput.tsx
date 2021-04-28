@@ -94,8 +94,8 @@ const ProviderMenu = ({
 const combinationSpl = (value: string, code: string) => {
 
   const regex = /\s+[a-zA-Z]+$/
-  if (regex.test(code) && /^[A-Za-z]+$/.test(code)) {
-    return value.replace(regex, code)
+  if (regex.test(value) && /^[A-Za-z]+$/.test(code)) {
+    return value.replace(/[a-zA-Z]+$/, code)
   }
   return `${value}${code}`
 }
@@ -179,10 +179,9 @@ export const QueryInput = React.forwardRef<
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        setShowIntelliSense(false);
         const val = combinationSpl(value, current?.code ?? '')
         onQueryChange && onQueryChange(val)
-        !showIntelliSense && onQueryEnter && onQueryEnter(val)
+        onQueryEnter && onQueryEnter(val)
       } else {
         setShowIntelliSense(true);
       }
@@ -212,7 +211,6 @@ export const QueryInput = React.forwardRef<
   // 通过鼠标选择备选项
   const handleProviderSelect = useCallback(
     (item: SuggestionItem) => {
-      setShowIntelliSense(false);
       const val = combinationSpl(value, item?.code ?? '');
       onQueryChange && onQueryChange(val);
     },
@@ -224,10 +222,8 @@ export const QueryInput = React.forwardRef<
   }, [visible])
 
   useEffect(() => {
-    if (!showIntelliSense) {
-      reset()
-    }
-  }, [reset, showIntelliSense])
+    reset()
+  }, [suggestionItems])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {

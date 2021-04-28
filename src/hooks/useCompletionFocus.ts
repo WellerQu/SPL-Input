@@ -24,6 +24,8 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
   const increase = useCallback(() => {
     if (dataSource[selectedIndex + 1]) {
       return setSelectedIndex(selectedIndex + 1)
+    } else {
+      return setSelectedIndex(0)
     }
   }, [dataSource, selectedIndex])
 
@@ -31,6 +33,8 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
   const decrease = useCallback(() => {
     if (dataSource[selectedIndex - 1]) {
       return setSelectedIndex(selectedIndex - 1)
+    } else {
+      return setSelectedIndex(dataSource.length - 1)
     }
   }, [dataSource, selectedIndex])
 
@@ -59,14 +63,14 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
     if (e.key === 'Tab') {
       e.preventDefault()
       e.stopPropagation()
-      pick()
+      increase()
     }
 
     return e
   }, [decrease, increase, pick])
 
   const reset = useCallback(() => {
-    setSelectedIndex(-1)
+    setSelectedIndex(0)
   }, [])
 
   // 选中后清楚索引位置

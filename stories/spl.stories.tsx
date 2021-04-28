@@ -41,7 +41,6 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
   return <QueryInput
     placeholder="按Enter键选中语法提示选项"
     value={query}
-    error={error}
     onQueryChange={handleChange}
     onQueryEnter={onQueryEnter}
     suggestionItems={suggestionList}
