@@ -141,7 +141,7 @@ type CompletionProviderType = InputProps & CompletionProviderProps;
 export const QueryInput = React.forwardRef<
   Input,
   CompletionProviderType
->((props, ref) => {
+>((props) => {
   const {
     loading,
     visible = false,
@@ -214,7 +214,7 @@ export const QueryInput = React.forwardRef<
       onQueryChange && onQueryChange(val);
       inputEl.current?.focus()
     },
-    [onQueryChange, value, ref]
+    [onQueryChange, value]
   );
 
   useEffect(() => {
