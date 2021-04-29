@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 
 import LoadingOutlined from '@ant-design/icons/LoadingOutlined';
 
@@ -67,11 +67,9 @@ const ProviderMenu = ({
             ))}
           </Menu>
           {
-            curItem && <div className="spl-desc">
-              {curItem.syntax ? `语法：${curItem.syntax}` : curItem.syntax}
-              <br />
-              <br />
-              {curItem.example ? `example: ${curItem.example}` : curItem.example}
+            (curItem?.syntax || curItem?.example) && <div className="spl-desc">
+              <p>{curItem.syntax ? <span>语法：</span> : ''}{curItem.syntax}</p>
+              <p>{curItem.example ? <span>example</span> : ''}{curItem.example}</p>
             </div>
           }
         </div>
@@ -157,6 +155,7 @@ export const QueryInput = React.forwardRef<
   } = props;
 
   const [showIntelliSense, setShowIntelliSense] = useState(false);
+  const inputEl = useRef<Input>(null);
 
   const [
     current,
@@ -213,8 +212,9 @@ export const QueryInput = React.forwardRef<
     (item: SuggestionItem) => {
       const val = combinationSpl(value, item?.code ?? '');
       onQueryChange && onQueryChange(val);
+      inputEl.current?.focus()
     },
-    [onQueryChange, value]
+    [onQueryChange, value, ref]
   );
 
   useEffect(() => {
@@ -253,7 +253,6 @@ export const QueryInput = React.forwardRef<
   const composedProps = useMemo<InputProps>(
     () => ({
       ...rest,
-      ref: ref,
       onInput: (e: React.FormEvent<HTMLInputElement>) => {
         onQueryChange && onQueryChange(e.currentTarget.value)
       },
@@ -286,6 +285,7 @@ export const QueryInput = React.forwardRef<
         visible={showIntelliSense}
       >
         <Input
+          ref={inputEl}
           {...composedProps}
           value={value}
         />
