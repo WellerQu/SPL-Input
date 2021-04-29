@@ -146,7 +146,6 @@ export const QueryInput = React.forwardRef<
   const {
     loading,
     visible = false,
-    onCompletionSelect,
     onQueryChange,
     onQueryEnter,
     suggestionItems,
@@ -164,8 +163,7 @@ export const QueryInput = React.forwardRef<
     reset,
     onKeyEvent,
   ] = useCompletionFocus<SuggestionItem>(
-    suggestionItems,
-    onCompletionSelect
+    suggestionItems
   );
 
   const handleQueryFocus = useCallback(() => {
@@ -186,7 +184,7 @@ export const QueryInput = React.forwardRef<
         setShowIntelliSense(true);
       }
     },
-    [showIntelliSense, value, current, onQueryEnter]
+    [value, current?.code, onQueryChange, onQueryEnter]
   );
 
   useEffect(() => {
@@ -224,7 +222,7 @@ export const QueryInput = React.forwardRef<
 
   useEffect(() => {
     reset()
-  }, [suggestionItems])
+  }, [reset, suggestionItems])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -261,7 +259,7 @@ export const QueryInput = React.forwardRef<
       addonAfter: loading ? <LoadingOutlined /> : null,
       onKeyDown: compose(handleKeyDown ?? identity, onKeyEvent),
     }),
-    [handleKeyDown, loading, onQueryChange, onKeyEvent, rest]
+    [rest, ref, loading, handleKeyDown, onKeyEvent, onQueryChange]
   );
 
   let menu
