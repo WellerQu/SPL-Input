@@ -44,29 +44,23 @@ export function useCompletionFocus<T>(dataSource: T[], onPick?: (item: T) => voi
   }, [current, onPick])
 
   // 通过键盘来选择备选项
-  const handleKeyEvent = useCallback<ProxyEventHandler<React.KeyboardEvent<Input>>>((e) => {
+  const handleKeyEvent = useCallback<ProxyEventHandler<React.KeyboardEvent<Input>>>((event) => {
+
     // 向下移动焦点
-    if ((e.ctrlKey && e.key === 'j') || e.key === 'ArrowDown') {
-      e.preventDefault()
-      e.stopPropagation()
+    if ((event.ctrlKey && event.key === 'j') || event.key === 'ArrowDown' || event.key === 'Tab') {
+      event.preventDefault()
+      event.stopPropagation()
       increase()
     }
 
     // 向上移动焦点
-    if ((e.ctrlKey && e.key === 'k') || e.key === 'ArrowUp') {
-      e.preventDefault()
-      e.stopPropagation()
+    if ((event.ctrlKey && event.key === 'k') || event.key === 'ArrowUp' || event.key === 'Tab' && event.shiftKey) {
+      event.preventDefault()
+      event.stopPropagation()
       decrease()
     }
 
-    // 确认使用备选项
-    if (e.key === 'Tab') {
-      e.preventDefault()
-      e.stopPropagation()
-      increase()
-    }
-
-    return e
+    return event
   }, [decrease, increase, pick])
 
   const reset = useCallback(() => {
