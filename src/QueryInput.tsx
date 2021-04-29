@@ -33,6 +33,7 @@ const Colors: {
   符号: 'magenta',
   算子: 'green',
   逻辑: 'volcano',
+  字段值: 'purple',
 };
 
 /**
@@ -141,7 +142,7 @@ type CompletionProviderType = InputProps & CompletionProviderProps;
 export const QueryInput = React.forwardRef<
   Input,
   CompletionProviderType
->((props) => {
+>((props, ref) => {
   const {
     loading,
     visible = false,
@@ -253,13 +254,14 @@ export const QueryInput = React.forwardRef<
   const composedProps = useMemo<InputProps>(
     () => ({
       ...rest,
+      ref,
       onInput: (e: React.FormEvent<HTMLInputElement>) => {
         onQueryChange && onQueryChange(e.currentTarget.value)
       },
       addonAfter: loading ? <LoadingOutlined /> : null,
       onKeyDown: compose(handleKeyDown ?? identity, onKeyEvent),
     }),
-    [handleKeyDown, loading, onQueryChange, onKeyEvent, ref, rest]
+    [handleKeyDown, loading, onQueryChange, onKeyEvent, rest]
   );
 
   let menu
@@ -285,8 +287,8 @@ export const QueryInput = React.forwardRef<
         visible={showIntelliSense}
       >
         <Input
-          ref={inputEl}
           {...composedProps}
+          ref={inputEl}
           value={value}
         />
       </Dropdown>
