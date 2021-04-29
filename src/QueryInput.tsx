@@ -221,8 +221,8 @@ export const QueryInput = React.forwardRef<
   }, [visible])
 
   useEffect(() => {
-    reset()
-  }, [reset, suggestionItems])
+    !showIntelliSense && reset()
+  }, [reset, showIntelliSense])
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {

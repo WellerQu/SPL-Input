@@ -62,6 +62,13 @@ export function useCompletionFocus<T>(dataSource: T[]): [
     setSelectedIndex(0)
   }, [])
 
+  // 选中空值索引改为0
+  useEffect(() => {
+    if (!dataSource[selectedIndex]) {
+      setSelectedIndex(0)
+    }
+  }, [dataSource, selectedIndex])
+
   // 选中后清楚索引位置
   useEffect(() => {
     reset
