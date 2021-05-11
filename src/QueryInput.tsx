@@ -264,7 +264,7 @@ export const QueryInput = React.forwardRef<
   );
 
   let menu
-  if (error) {
+  if (error && !suggestionItems.find(item => item.code.includes(error))) {
     menu = <div className="spl-sourceList spl-syntax-error">{error}</div>
   } else {
     menu = <ProviderMenu
