@@ -262,12 +262,14 @@ export const QueryInput = React.forwardRef<
     [rest, ref, loading, handleKeyDown, onKeyEvent, onQueryChange]
   );
 
+  const filteredItems = useMemo(() => suggestionItems.filter(item => !error || item.code.includes(error)), [error, suggestionItems])
+
   let menu
-  if (error && !suggestionItems.find(item => item.code.includes(error))) {
+  if (error && filteredItems.length === 0) {
     menu = <div className="spl-sourceList spl-syntax-error">{error}</div>
   } else {
     menu = <ProviderMenu
-      dataSource={suggestionItems}
+      dataSource={ filteredItems}
       selectedKey={`${selectedIndex}`}
       onSelect={handleProviderSelect}
     />;

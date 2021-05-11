@@ -1,7 +1,9 @@
+/// <reference types="../spl-parser/typings" />
+
 import React, { ComponentProps, useState, useCallback, useEffect } from 'react';
 import { Story } from '@storybook/react';
 
-import { getSuggestions } from '../spl-parser/src'
+import { tryParse } from '../spl-parser/src/parser'
 
 import 'antd/dist/antd.css'
 
@@ -23,14 +25,15 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
 
   const handleChange = useCallback((value: string) => {
     setQuery(value)
-    const [suggestionList, error] = getSuggestions(value)
+    const [,suggestionList, error] = tryParse(value)
+    console.log(suggestionList, error)
+
     setSuggestionList(suggestionList)
-    setError(undefined)
-    error ? setError(`非预期的字符${error}`) : setError(undefined)
+    setError(error)
   }, [])
 
   useEffect(() => {
-    const [suggestionList] = getSuggestions('')
+    const [,suggestionList] = tryParse('')
     setSuggestionList(suggestionList)
   }, [])
 
@@ -41,6 +44,7 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
   return <QueryInput
     placeholder="按Enter键选中语法提示选项"
     value={query}
+    error={ error }
     onQueryChange={handleChange}
     onQueryEnter={onQueryEnter}
     suggestionItems={suggestionList}
