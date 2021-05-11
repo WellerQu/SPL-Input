@@ -156,15 +156,14 @@ export const QueryInput = React.forwardRef<
 
   const [showIntelliSense, setShowIntelliSense] = useState(false);
   const inputEl = useRef<Input>(null);
+  const filteredItems = useMemo(() => suggestionItems.filter(item => !error || item.code.includes(error)), [error, suggestionItems])
 
   const [
     current,
     selectedIndex,
     reset,
     onKeyEvent,
-  ] = useCompletionFocus<SuggestionItem>(
-    suggestionItems
-  );
+  ] = useCompletionFocus<SuggestionItem>(filteredItems);
 
   const handleQueryFocus = useCallback(() => {
     setShowIntelliSense(true);
@@ -262,7 +261,6 @@ export const QueryInput = React.forwardRef<
     [rest, ref, loading, handleKeyDown, onKeyEvent, onQueryChange]
   );
 
-  const filteredItems = useMemo(() => suggestionItems.filter(item => !error || item.code.includes(error)), [error, suggestionItems])
 
   let menu
   if (error && filteredItems.length === 0) {
