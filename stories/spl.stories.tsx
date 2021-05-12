@@ -1,6 +1,6 @@
 /// <reference types="../spl-parser/typings" />
 
-import React, { ComponentProps, useState, useCallback, useEffect } from 'react';
+import React, { ComponentProps, useState, useCallback, useEffect, useMemo } from 'react';
 import { Story } from '@storybook/react';
 
 import { tryParse } from '../spl-parser/src/parser'
@@ -23,17 +23,17 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
   const [suggestionList, setSuggestionList] = useState<SuggestionItem[]>([])
   const [error, setError] = useState<string>()
 
+  const errorMsg = useMemo(() => error ? `出现非预期的字符 "${error}"` : '', [error])
+
   const handleChange = useCallback((value: string) => {
     setQuery(value)
-    const [,suggestionList, error] = tryParse(value)
-    console.log(suggestionList, error)
-
+    const [, suggestionList, error] = tryParse(value)
     setSuggestionList(suggestionList)
     setError(error)
   }, [])
 
   useEffect(() => {
-    const [,suggestionList] = tryParse('')
+    const [, suggestionList] = tryParse('')
     setSuggestionList(suggestionList)
   }, [])
 
@@ -44,7 +44,8 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
   return <QueryInput
     placeholder="按Enter键选中语法提示选项"
     value={query}
-    error={ error }
+    error={error}
+    errorMessage={errorMsg}
     onQueryChange={handleChange}
     onQueryEnter={onQueryEnter}
     suggestionItems={suggestionList}
