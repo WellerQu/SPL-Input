@@ -70,7 +70,7 @@ const ProviderMenu = ({
           {
             (curItem?.syntax || curItem?.example) && <div className="spl-desc">
               <p>{curItem.syntax ? <span>语法：</span> : ''}{curItem.syntax}</p>
-              <p>{curItem.example ? <span>example</span> : ''}{curItem.example}</p>
+              <p>{curItem.example ? <span>example：</span> : ''}{curItem.example}</p>
             </div>
           }
         </div>
@@ -90,13 +90,12 @@ const ProviderMenu = ({
 /**
 * 选中语法替换规则
 */
-const combinationSpl = (value: string, code: string) => {
-
-  const regex = /\s+[a-zA-Z]+$/
-  if (regex.test(value) && /^[A-Za-z]+$/.test(code)) {
-    return value.replace(/[a-zA-Z]+$/, code)
+const combinationSpl = (value: string, item: SuggestionItem | null) => {
+  const regex = /\s+[a-zA-Z][\s\S]*$/
+  if (item && ['关键词', '算子'].includes(item?.tag) && regex.test(value)) {
+    return value.replace(regex, ` ${item?.code}`)
   }
-  return `${value}${code}`
+  return `${value}${item?.code ?? ''}`
 }
 
 export interface CompletionProviderProps {
@@ -117,9 +116,13 @@ export interface CompletionProviderProps {
    */
   visible?: boolean;
   /**
-   * 错误提示
+   * 错误
    */
   error?: string;
+  /**
+  * 错误提示信息
+  */
+  errorMessage?: string;
   /**
    * 鼠标选择
    */
@@ -151,6 +154,7 @@ export const QueryInput = React.forwardRef<
     suggestionItems,
     value = '',
     error,
+    errorMessage,
     ...rest
   } = props;
 
@@ -176,7 +180,7 @@ export const QueryInput = React.forwardRef<
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        const val = combinationSpl(value, current?.code ?? '')
+        const val = combinationSpl(value, current)
         onQueryChange && onQueryChange(val)
         onQueryEnter && onQueryEnter(val)
       } else {
@@ -208,7 +212,7 @@ export const QueryInput = React.forwardRef<
   // 通过鼠标选择备选项
   const handleProviderSelect = useCallback(
     (item: SuggestionItem) => {
-      const val = combinationSpl(value, item?.code ?? '');
+      const val = combinationSpl(value, item);
       onQueryChange && onQueryChange(val);
       inputEl.current?.focus()
     },
@@ -264,10 +268,10 @@ export const QueryInput = React.forwardRef<
 
   let menu
   if (error && filteredItems.length === 0) {
-    menu = <div className="spl-sourceList spl-syntax-error">{error}</div>
+    menu = <div className="spl-sourceList spl-syntax-error">{errorMessage}</div>
   } else {
     menu = <ProviderMenu
-      dataSource={ filteredItems}
+      dataSource={filteredItems}
       selectedKey={`${selectedIndex}`}
       onSelect={handleProviderSelect}
     />;
