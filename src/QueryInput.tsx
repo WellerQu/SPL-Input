@@ -91,8 +91,8 @@ const ProviderMenu = ({
 * 选中语法替换规则
 */
 const combinationSpl = (value: string, item: SuggestionItem | null) => {
-  const regex = /\s+[a-zA-Z][\s\S]*$/
-  if (item && ['关键词', '算子'].includes(item?.tag) && regex.test(value)) {
+  const regex = /\s+[a-zA-Z]+$/
+  if (item && ['关键词', '算子', '函数'].includes(item?.tag) && regex.test(value)) {
     return value.replace(regex, ` ${item?.code}`)
   }
   return `${value}${item?.code ?? ''}`
@@ -187,7 +187,7 @@ export const QueryInput = React.forwardRef<
         setShowIntelliSense(true);
       }
     },
-    [value, current?.code, onQueryChange, onQueryEnter]
+    [value, current, onQueryChange, onQueryEnter]
   );
 
   useEffect(() => {
