@@ -91,9 +91,9 @@ const ProviderMenu = ({
 * 选中语法替换规则
 */
 const combinationSpl = (value: string, item: SuggestionItem | null) => {
-  const regex = /\s+[a-zA-Z]+$/
+  const regex = /[a-zA-Z]+$/
   if (item && ['关键词', '算子', '函数'].includes(item?.tag) && regex.test(value)) {
-    return value.replace(regex, ` ${item?.code}`)
+    return value.replace(regex, `${item?.code}`)
   }
   return `${value}${item?.code ?? ''}`
 }
