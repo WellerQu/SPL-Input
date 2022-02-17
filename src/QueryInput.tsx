@@ -10,6 +10,8 @@ import Tag from 'antd/lib/tag';
 import Card from 'antd/lib/card';
 import Empty from 'antd/lib/empty';
 
+import 'spl-parser'
+
 import { compose } from './utils/compose';
 import { identity } from './utils/identity';
 
@@ -90,12 +92,21 @@ const ProviderMenu = ({
 /**
 * 选中语法替换规则
 */
-const combinationSpl = (value: string, item: SuggestionItem | null) => {
-  const regex = /[a-zA-Z]+$/
-  if (item && ['关键词', '算子', '函数', '逻辑'].includes(item?.tag) && regex.test(value)) {
-    return value.replace(regex, `${item?.code}`)
+const combinationSpl = (preludeSPL: string, item: SuggestionItem | null) => {
+  if (item === null) {
+    return preludeSPL
   }
-  return `${value}${item?.code ?? ''}`
+
+  const regex = /[a-zA-Z]+$/
+  if (['关键词', '算子', '函数', '逻辑'].includes(item.tag) && regex.test(preludeSPL)) {
+    return preludeSPL.replace(regex, `${item?.code}`)
+  }
+
+  if (item.mapping === 'fieldValue' && isNaN(+item.code)) {
+    return `${preludeSPL}"${item.code ?? ''}"`
+  }
+
+  return `${preludeSPL}${item.code ?? ''}`
 }
 
 export interface CompletionProviderProps {

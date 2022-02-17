@@ -3,7 +3,7 @@
 import React, { ComponentProps, useState, useCallback, useEffect, useMemo } from 'react';
 import { Story } from '@storybook/react';
 
-import { tryParse } from '../spl-parser/src/parser'
+import { tryParse } from 'spl-parser/dist/parser'
 
 import 'antd/dist/antd.css'
 
@@ -28,6 +28,22 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
   const handleChange = useCallback((value: string) => {
     setQuery(value)
     const [, suggestionList, error] = tryParse(value)
+
+    if (suggestionList.find(item => item.mapping === 'fieldValue')) {
+      suggestionList.push({
+        label: '一个神奇的数字值',
+        tag: '字段值',
+        mapping: 'fieldValue',
+        code: '123',
+      })
+      suggestionList.push({
+        label: '一个神奇的字符串',
+        tag: '字段值',
+        mapping: 'fieldValue',
+        code: 'abc',
+      })
+    }
+
     setSuggestionList(suggestionList)
     setError(error)
   }, [])
@@ -37,7 +53,7 @@ const Template: Story<ComponentProps<typeof QueryInput>> = () => {
     setSuggestionList(suggestionList)
   }, [])
 
-  const onQueryEnter = useCallback((value: string) => {
+  const onQueryEnter = useCallback((/* value: string */) => {
     // 回车查询事件
   }, [])
 

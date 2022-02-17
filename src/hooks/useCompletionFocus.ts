@@ -69,9 +69,9 @@ export function useCompletionFocus<T>(dataSource: T[]): [
     }
   }, [dataSource, selectedIndex])
 
-  // 选中后清楚索引位置
+  // 选中后清除索引位置
   useEffect(() => {
-    reset
+    reset()
   }, [dataSource, reset])
 
   return [current, selectedIndex, reset, handleKeyEvent]
