@@ -1,6 +1,6 @@
 {
   "name": "spl-input",
-  "version": "2.1.7",
+  "version": "2.2.0",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist",
