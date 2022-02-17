@@ -99,14 +99,18 @@ const combinationSpl = (preludeSPL: string, item: SuggestionItem | null) => {
 
   const regex = /[a-zA-Z]+$/
   if (['关键词', '算子', '函数', '逻辑'].includes(item.tag) && regex.test(preludeSPL)) {
-    return preludeSPL.replace(regex, `${item?.code}`)
+    return preludeSPL.replace(regex, `${item.code}`)
   }
 
   if (item.mapping === 'fieldValue' && isNaN(+item.code)) {
-    return `${preludeSPL}"${item.code ?? ''}"`
+    // 转译双引号和 \
+    const translated = item.code.toString()
+      .replace(/\\/g, '\\\\')
+      .replace(/"/g, '\\$&')
+    return `${preludeSPL}"${translated}"`
   }
 
-  return `${preludeSPL}${item.code ?? ''}`
+  return `${preludeSPL}${item.code}`
 }
 
 export interface CompletionProviderProps {
